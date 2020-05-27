@@ -14,13 +14,20 @@ export default class PipMode {
     async toggle() {
         const elem = document.getElementById("pip");
         elem.play();
-        if ("pictureInPictureEnabled" in document) {
-            if (!document.pictureInPictureElement) {
-                await elem.requestPictureInPicture();
-                elem.srcObject = med.myStream
+
+        if ( "fullscreenEnabled" in document) {
+            if (!document.fullscreen) {
+                await elem.requestFullscreen().catch(error => {
+                    elem.requestFullscreen();
+                });
+                elem.srcObject = document.getElementsByClassName("remote-video")[0].srcObject
                 elem.play();
             } else {
-                document.exitPictureInPicture();
+                if (document.pictureInPictureElement) {
+                    document.exitPictureInPicture();
+                } else {
+                    document.exitFullscreen();
+                }
             }
         }
     }
